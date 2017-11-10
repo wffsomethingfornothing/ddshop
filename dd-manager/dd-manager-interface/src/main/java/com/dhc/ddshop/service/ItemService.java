@@ -1,9 +1,13 @@
 package com.dhc.ddshop.service;
 
+import com.dhc.ddshop.common.dto.Order;
 import com.dhc.ddshop.common.dto.Page;
 import com.dhc.ddshop.common.dto.Result;
 import com.dhc.ddshop.pojo.po.TbItem;
 import com.dhc.ddshop.pojo.vo.TbItemCustom;
+import com.dhc.ddshop.pojo.vo.TbItemQuery;
+
+import java.util.List;
 
 /**
  * User: DHC
@@ -22,5 +26,7 @@ public interface ItemService {
      * @param page
      * @return
      */
-    Result<TbItemCustom> listItemsByPage(Page page);
+    Result<TbItemCustom> listItemsByPage(Page page, Order order,TbItemQuery tbItemQuery);
+
+    int updateBatch(List<Long> ids);
 }

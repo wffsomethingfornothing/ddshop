@@ -8,19 +8,61 @@
      c.name as catName
   </sql>
 
+  <sql id="Where_Clause">
+    <where>
+      i.status != 3
+      <if test="tbItemQuery != null and tbItemQuery.title != null and tbItemQuery.title != ''">
+        and i.title like '%${tbItemQuery.title}%'
+      </if>
+      <if test="tbItemQuery != null and tbItemQuery.status != null and tbItemQuery.status != 0">
+        and i.status = #{tbItemQuery.status}
+      </if>
+    </where>
+  </sql>
+
   <select id="countItems" resultType="_int">
     select count(1)
-    from tb_item
+    from tb_item i <include refid="Where_Clause" />
   </select>
 
-  <select id="listItemsByPage" parameterType="com.dhc.ddshop.common.dto.Page" resultType="com.dhc.ddshop.pojo.vo.TbItemCustom">
+  <select id="listItemsByPage"  resultType="com.dhc.ddshop.pojo.vo.TbItemCustom">
     SELECT
     <include refid="Base_Column_List" />
     FROM tb_item i
     LEFT JOIN tb_item_cat c
     ON i.cid = c.id
-    ORDER BY i.id DESC
-    LIMIT #{offset},#{rows}
+    <include refid="Where_Clause" />
+    <choose>
+      <when test="order !=null and order.sort !=null and order.order !=null and order.orderParams !=null">
+        <foreach collection="order.orderParams" item="item" open="order by" close="" separator=",">
+           i.${item}
+        </foreach>
+      </when>
+      <otherwise>
+        ORDER BY i.id DESC
+      </otherwise>
+    </choose>
+
+    LIMIT #{page.offset},#{page.rows}
   </select>
+
+  <!--<select id="listItemsByPage"  resultType="com.dhc.ddshop.pojo.vo.TbItemCustom">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM tb_item i
+    LEFT JOIN tb_item_cat c
+    ON i.cid = c.id
+    WHERE i.status!=3
+    <choose>
+      <when test="order !=null and order.sort !=null and order.order !=null">
+        ORDER BY i.${order.sort} ${order.order}
+      </when>
+      <otherwise>
+        ORDER BY i.id DESC
+      </otherwise>
+    </choose>
+
+    LIMIT #{page.offset},#{page.rows}
+  </select>-->
 
 </mapper>
