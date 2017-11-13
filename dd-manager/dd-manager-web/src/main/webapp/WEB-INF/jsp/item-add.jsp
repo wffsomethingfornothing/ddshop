@@ -75,7 +75,24 @@
 </div>
 
 <script>
-    //加载商品类目的树形下拉框
+    function submitForm() {
+        $('#itemAddForm').form('submit',{
+            //提交表单到item进行处理
+            url:'item',
+            onSubmit:function(){
+                $('#price').val($('#priceView').val()*100);
+               return $(this).form('validate');
+            },
+            success:function(data){
+                if(data>0) {
+                    $.messager.alert('温馨提示','恭喜！添加商品成功');
+                }
+            }
+        });
+    }
+    //实例化富文本编辑器
+    var ue=UE.getEditor('container');
+    //加载商品类目的树形下拉
     $('#cid').combotree({
         url: 'itemCats?parentId=0',
         required: true,

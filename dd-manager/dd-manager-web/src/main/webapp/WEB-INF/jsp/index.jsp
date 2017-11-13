@@ -54,6 +54,10 @@
 <script>
     moment.locale('zh-cn');
 </script>
+<!-- ueditor配置文件 -->
+<script type="text/javascript" src="js/ueditor/ueditor.config.js"></script>
+<!-- ueditor编辑器源码文件 -->
+<script type="text/javascript" src="js/ueditor/ueditor.all.js"></script>
 <!-- 自定义脚本 -->
 <script src="js/common.js"></script>
 <!-- 自定义js -->

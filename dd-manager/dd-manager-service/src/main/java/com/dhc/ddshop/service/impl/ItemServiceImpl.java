@@ -3,19 +3,22 @@ package com.dhc.ddshop.service.impl;
 import com.dhc.ddshop.common.dto.Order;
 import com.dhc.ddshop.common.dto.Page;
 import com.dhc.ddshop.common.dto.Result;
+import com.dhc.ddshop.common.util.IDUtils;
 import com.dhc.ddshop.dao.TbItemCustomMapper;
+import com.dhc.ddshop.dao.TbItemDescMapper;
 import com.dhc.ddshop.dao.TbItemMapper;
 import com.dhc.ddshop.pojo.po.TbItem;
+import com.dhc.ddshop.pojo.po.TbItemDesc;
 import com.dhc.ddshop.pojo.po.TbItemExample;
 import com.dhc.ddshop.pojo.vo.TbItemCustom;
 import com.dhc.ddshop.pojo.vo.TbItemQuery;
 import com.dhc.ddshop.service.ItemService;
-import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +38,8 @@ public class ItemServiceImpl implements ItemService {
     private TbItemMapper itemDao;
     @Autowired
     private TbItemCustomMapper itemCustomDao;
+    @Autowired
+    private TbItemDescMapper itemDescDao;
 
 
     @Override
@@ -92,6 +97,33 @@ public class ItemServiceImpl implements ItemService {
         criteria.andIdIn(ids);
         //
         i=itemDao.updateByExampleSelective(record,example);
+        }catch (Exception e){
+            logger.error(e.getMessage(),e);
+            e.printStackTrace();
+        }
+        return i;
+    }
+
+    @Override
+    public int saveItem(TbItem tbItem, String content) {
+        int i=0;
+        try {
+            //处理tb_item
+            long itemId = IDUtils.getItemId();
+            tbItem.setId(itemId);
+            tbItem.setStatus((byte)2);
+            tbItem.setCreated(new Date());
+            tbItem.setUpdated(new Date());
+            i=itemDao.insert(tbItem);
+            //处理tb_item_desc
+            TbItemDesc desc=new TbItemDesc();
+            desc.setItemId(itemId);
+            desc.setItemDesc(content);
+            desc.setCreated(new Date());
+            desc.setUpdated(new Date());
+            i += itemDescDao.insert(desc);
+
+
         }catch (Exception e){
             logger.error(e.getMessage(),e);
             e.printStackTrace();
