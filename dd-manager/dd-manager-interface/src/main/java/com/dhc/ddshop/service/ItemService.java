@@ -39,5 +39,5 @@ public interface ItemService {
      * @param tbtem 商品实体类
      * @return content 商品描述
      */
-    int saveItem(TbItem tbItem, String content);
+    int saveItem(TbItem tbItem, String content,String paramData);
 }
